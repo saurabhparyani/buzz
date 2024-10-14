@@ -1,6 +1,7 @@
 import { ThemeToggle } from "./components/ThemeToggle";
 import ShimmerButton from "./components/ui/shimmer-button";
 import { TextGenerateEffect } from "./components/ui/text-generate-effect";
+import { Link } from "react-router-dom";
 
 function App() {
   return (
@@ -17,9 +18,11 @@ function App() {
             <TextGenerateEffect words="Where the hive mind meets." />
           </div>
           <div className="flex justify-center mt-10">
-            <ShimmerButton>
-              <div className="text-xl font-semibold">start today.</div>
-            </ShimmerButton>
+            <Link to="/signup">
+              <ShimmerButton>
+                <div className="text-xl font-semibold">start today.</div>
+              </ShimmerButton>
+            </Link>
           </div>
         </div>
       </div>

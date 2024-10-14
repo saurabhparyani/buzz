@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build: .
+    container_name: express_app
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:${DATABASE_PORT}/${MONGO_INITDB_DATABASE}?authSource=admin
+    depends_on:
+      - mongo
+    volumes:
+      - .:/usr/src/app
+    command: npm run dev
+
+volumes:
+  mongo-data:

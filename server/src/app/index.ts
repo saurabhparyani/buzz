@@ -1,20 +1,24 @@
 import express from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
+import cors from 'cors';
+import { User } from './user';
 
 
 export async function InitServer() {
     const app = express();
+
+    app.use(cors());
     const graphqlServer = new ApolloServer({
         typeDefs: `
+            ${User.types}
             type Query {
-                hello: String
+                ${User.queries}
             }
-            
         `,
         resolvers: {
             Query: {
-                hello: () => 'Hello World!',
+                ...User.resolvers.queries,
             },
         },
     });
