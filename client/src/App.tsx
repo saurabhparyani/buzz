@@ -1,7 +1,7 @@
 import { ThemeToggle } from "./components/ThemeToggle";
 import ShimmerButton from "./components/ui/shimmer-button";
 import { TextGenerateEffect } from "./components/ui/text-generate-effect";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 
 function App() {
   return (

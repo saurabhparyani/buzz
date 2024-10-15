@@ -1,3 +1,4 @@
+import { JWTUser } from "../interfaces";
 import jwt from "jsonwebtoken";
 import { Document } from "mongoose";
 
@@ -11,12 +12,20 @@ export interface UserDocument extends Document {
 
 class JwtService {
     public static generateTokenForUser(user: UserDocument) {
-        const payload = {
+        const payload: JWTUser = {
             userId: user._id,
             email: user.email,
         }
         const token = jwt.sign(payload, process.env.JWT_SECRET as string);
         return token;
+    }
+
+    public static decodeToken(token: string) {
+        try {
+            return jwt.verify(token, process.env.JWT_SECRET as string) as JWTUser;
+        } catch (error) {
+            throw new Error('Invalid token');
+        }
     }
 }
 

@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useCallback, useEffect } from "react";
+import { useNavigate, Link } from "@tanstack/react-router";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -7,10 +7,22 @@ import { Button } from "../components/ui/button";
 import logo from "../assets/logo.png";
 import toast from "react-hot-toast";
 import { graphqlClient } from "../../clients/api";
-import { verifyUserGoogleTokenQuery } from "../../graphql/query/user";
+import {
+  getCurrentUserQuery,
+  verifyUserGoogleTokenQuery,
+} from "../../graphql/query/user";
+import { useCurrentUser } from "../hooks/user";
 
 const Signin: React.FC = () => {
   const navigate = useNavigate();
+
+  const { user } = useCurrentUser();
+
+  useEffect(() => {
+    if (user) {
+      navigate({ to: "/home" });
+    }
+  }, [user, navigate]);
 
   const handleLoginWithGoogle = useCallback(
     async (credentialResponse: CredentialResponse) => {
@@ -19,17 +31,24 @@ const Signin: React.FC = () => {
         return toast.error(`Google token not found`);
       }
 
-      const { verifyGoogleToken } = await graphqlClient.request(
-        verifyUserGoogleTokenQuery,
-        { token: googleToken }
-      );
+      try {
+        const { verifyGoogleToken } = await graphqlClient.request(
+          verifyUserGoogleTokenQuery,
+          { token: googleToken }
+        );
 
-      toast.success(`Verification successful! 🎊`);
-      console.log(verifyGoogleToken);
-
-      if (verifyGoogleToken) {
-        window.localStorage.setItem("__buzz_token", verifyGoogleToken);
-        navigate("/home");
+        if (verifyGoogleToken.token) {
+          window.localStorage.setItem("__buzz_token", verifyGoogleToken.token);
+          toast.success(`Welcome back! 🎊`);
+          await graphqlClient.request(getCurrentUserQuery);
+          navigate({ to: "/home" });
+        } else {
+          toast.error("User not found, redirecting to signup");
+          navigate({ to: "/signup" });
+        }
+      } catch (error) {
+        console.error("Error during Google login:", error);
+        toast.error("An error occurred during login");
       }
     },
     [navigate]

@@ -7,4 +7,8 @@ export const types = `#graphql
         profileImageUrl: String
     }
 
+    type GoogleTokenResponse {
+        token: String
+    }
+
 `
