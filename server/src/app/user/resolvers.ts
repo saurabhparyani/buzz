@@ -26,45 +26,39 @@ interface GoogleTokenResult {
 
 const queries = {
     verifyGoogleToken: async (parent: any, { token }: { token: string }): Promise<GoogleTokenResponse> => {
-        try {
-            const googleOAuthUrl = new URL('https://oauth2.googleapis.com/tokeninfo');
-            googleOAuthUrl.searchParams.set('id_token', token);
-
-            const { data } = await axios.get<GoogleTokenResult>(googleOAuthUrl.toString(), {
-                responseType: 'json'
-            });
-
-            const existingUser = await User.findOne({ email: data.email }) as UserDocument | null;
-            
-            if (existingUser) {
-                const userToken = await JwtService.generateTokenForUser(existingUser);
-                return { token: userToken };
-            }
-
-            // If user doesn't exist, create a new one
-            const newUser = new User({
-                email: data.email,
-                firstName: data.given_name,
-                lastName: data.family_name,
-                profileImageUrl: data.picture,
-            });
-            await newUser.save();
-            
-            const userInDb = await User.findOne({ email: data.email }) as UserDocument | null;
-
-            if (!userInDb) {
-                throw new Error("User not found");
-            }
-
-            const userToken = await JwtService.generateTokenForUser(userInDb);
-
-            return { token: userToken };
-        } catch (error) {
-            console.error('Error in verifyGoogleToken:', error);
-            throw new Error('Failed to verify Google token');
+      try {
+        const googleOAuthUrl = new URL('https://oauth2.googleapis.com/tokeninfo');
+        googleOAuthUrl.searchParams.set('id_token', token);
+  
+        const { data } = await axios.get<GoogleTokenResult>(googleOAuthUrl.toString(), {
+          responseType: 'json'
+        });
+  
+        let user = await User.findOne({ email: data.email });
+        
+        if (!user) {
+          user = new User({
+            email: data.email,
+            firstName: data.given_name,
+            lastName: data.family_name,
+            profileImageUrl: data.picture,
+          });
+          await user.save();
         }
+  
+        if (!user) {
+          throw new Error('Failed to create or find user');
+        }
+  
+        const userToken = await JwtService.generateTokenForUser(user as UserDocument);
+        return { token: userToken };
+      } catch (error) {
+        console.error('Error in verifyGoogleToken:', error);
+        throw new Error('Failed to verify Google token');
+      }
     },
-
+  
+    
     getCurrentUser: async (parent: any, args: any, ctx: GraphQLContext) => {
         if (!ctx.user) {
           return null;
@@ -78,5 +72,6 @@ const queries = {
         }
     }
 }
+
 
 export const resolvers = { queries };

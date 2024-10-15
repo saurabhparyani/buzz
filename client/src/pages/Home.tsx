@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useCurrentUser } from "../hooks/user";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import { Button } from "../components/ui/button";
 import { graphqlClient } from "../../clients/api";
 import { useNavigate } from "@tanstack/react-router";
@@ -12,11 +12,16 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      navigate({ to: "/signin", replace: true });
+      navigate({ to: "/", replace: true });
     }
   }, [user, isLoading, navigate]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
   if (error) return <div>Error: {error.message}</div>;
   if (!user) return null;
 
@@ -25,7 +30,7 @@ const Home: React.FC = () => {
     graphqlClient.setHeader("Authorization", "");
     queryClient.setQueryData(["current-user"], null);
     queryClient.invalidateQueries({ queryKey: ["current-user"] });
-    navigate({ to: "/signin", replace: true });
+    navigate({ to: "/", replace: true });
   };
 
   return (

@@ -11,4 +11,8 @@ export const types = `#graphql
         token: String
     }
 
+    type AuthResponse {
+    token: String!
+  }
+
 `
