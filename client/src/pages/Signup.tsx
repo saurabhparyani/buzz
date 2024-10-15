@@ -64,6 +64,8 @@ const Signup: React.FC = () => {
           </div>
           <div className="flex justify-center">
             <GoogleLogin
+              theme="filled_black"
+              shape="circle"
               onSuccess={handleLoginWithGoogle}
               onError={() => {
                 console.log("Login Failed");

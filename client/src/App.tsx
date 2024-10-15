@@ -1,4 +1,3 @@
-import { ThemeToggle } from "./components/ThemeToggle";
 import ShimmerButton from "./components/ui/shimmer-button";
 import { TextGenerateEffect } from "./components/ui/text-generate-effect";
 import { Link } from "@tanstack/react-router";
@@ -6,9 +5,6 @@ import { Link } from "@tanstack/react-router";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="absolute top-4 sm:top-6 md:top-8 lg:top-10 right-4 sm:right-6 md:right-8 lg:right-10 z-50">
-        <ThemeToggle />
-      </div>
       <div className="flex-grow flex items-center justify-center">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 text-center">
           <h1 className="text-7xl sm:text-[120px] md:text-[170px] lg:text-[200px] xl:text-[270px] mb-4 sm:mb-6 md:mb-8">
