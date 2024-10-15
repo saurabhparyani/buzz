@@ -31,11 +31,7 @@ export const NavMenu: React.FC = () => {
     <header className="flex items-center justify-between p-4 bg-white dark:bg-black shadow-md">
       <div className="flex-1">
         <Link to="/" className="flex items-center">
-          <img
-            src={logo}
-            alt="Buzz Logo"
-            className="hidden h-8 w-auto md:block"
-          />
+          <img src={logo} alt="Buzz Logo" className="h-8 w-auto" />
           <span className="mx-2 text-xl font-bold hidden lg:inline">buzz</span>
         </Link>
       </div>
