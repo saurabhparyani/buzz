@@ -4,10 +4,12 @@ export type Theme = "dark" | "light" | "system";
 
 export interface InitialStateTypes {
     theme: Theme;
+    isMenuOpen: boolean;
 }
 
 const initialState: InitialStateTypes = {
     theme: "system",
+    isMenuOpen: false,
 };
 
 export const globalSlice = createSlice({
@@ -17,8 +19,11 @@ export const globalSlice = createSlice({
         setTheme: (state, action: PayloadAction<Theme>) => {
             state.theme = action.payload;
         },
+        toggleMenu: (state) => {
+            state.isMenuOpen = !state.isMenuOpen;
+        },
     },
 });
 
-export const { setTheme } = globalSlice.actions;
+export const { setTheme, toggleMenu } = globalSlice.actions;
 export default globalSlice.reducer;

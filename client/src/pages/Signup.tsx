@@ -9,8 +9,10 @@ import {
   verifyUserGoogleTokenQuery,
 } from "../../graphql/query/user";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuthRedirect } from "../hooks/useAuthRedirect";
 
 const Signup: React.FC = () => {
+  const { isLoading } = useAuthRedirect("/signup");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -42,6 +44,8 @@ const Signup: React.FC = () => {
     },
     [navigate, queryClient]
   );
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="flex h-screen">
